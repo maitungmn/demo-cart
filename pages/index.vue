@@ -39,14 +39,18 @@
           class="elevation-1"
           hide-actions
         >
-          <template slot="items" slot-scope="props" v-if="props.item.click">
+          <template slot="items" slot-scope="props" v-if="props.item.title">
             <td>{{ props.item.title }}</td>
             <td>$ {{ props.item.price }}</td>
             <td>
+              <v-btn color="primary" small @click="addItem(props.index)">
+                <v-icon>add</v-icon>
+              </v-btn>
               {{ props.item.click }}
               <v-btn color="error" small @click="removeItem(props.index)">
                 <v-icon>delete</v-icon>
-              </v-btn>            </td>
+              </v-btn>
+            </td>
             <td>$ {{ props.item.click * props.item.price }}</td>
           </template>
           <template slot="footer">
@@ -87,22 +91,10 @@
           }
         ],
         buyitems: [
-          {
-            title: "Beer Bottle",
-            price: "25",
-            click: 0
-          },
-          {
-            title: "Eco Bag",
-            price: "73",
-            click: 0
-          },
-          {
-            title: "Paper Bag",
-            price: "35",
-            click: 0
-          },
-        ],
+          {click: 0},
+          {click: 0},
+          {click: 0}
+          ],
         headers: [
           {text: 'Shopping Cart', value: 'title'},
           {text: 'Price', value: 'price'},
@@ -116,24 +108,22 @@
       syncTotal() {
         this.total = 0;
         this.buyitems.forEach(i => {
-          this.total += i.click * parseInt(i.price)
+            this.total += i.click * parseInt(i.price ? i.price : 0)
         });
         return this.total;
       }
     },
     methods: {
       addItem(index) {
+        this.buyitems[index].title = this.items[index].title
+        this.buyitems[index].price = this.items[index].price
         this.buyitems[index].click += 1
       },
       removeItem(index) {
-        this.buyitems[index].click -= 1
+        if(this.buyitems[index].click > 0) {
+          this.buyitems[index].click -= 1
+        }
       }
-      // totalCount() {
-      //   this.buyitems.forEach(i => {
-      //     this.total += i.click * parseInt(i.price)
-      //   });
-      //   return this.total;
-      // }
     },
     watch: {
       buyitems(newVal) {
