@@ -13,7 +13,7 @@
       <v-flex xs10 offset-xs1>
         <v-card class="card--flex-toolbar">
           <v-toolbar card prominent>
-            <v-toolbar-title class="title black--text font-weight-light over-show">El-Meteo - Shopping Cart</v-toolbar-title>
+            <v-toolbar-title class="title black--text font-weight-light over-show">Shopping Cart</v-toolbar-title>
 
             <v-spacer></v-spacer>
 

@@ -2,13 +2,13 @@
   <div id="app">
     <v-container grid-list-lg>
       <v-layout row wrap>
-        <v-flex xs8 class="m-col-l pr-3">
+        <v-flex md8 xs12 class="m-col-l pr-3">
           <div class="top-info">
             <h4 class="headline font-weight-light">List items</h4>
           </div>
           <div id="product" class="mt-3">
             <v-layout justify-center row wrap>
-              <v-flex xs4 v-for="(item, index) in items" :key="index">
+              <v-flex md4 xs12 v-for="(item, index) in items" :key="index">
                 <v-card class="item-card mate-card1">
                   <v-img
                     :src="item.img"
@@ -27,7 +27,7 @@
             </v-layout>
           </div>
         </v-flex>
-        <v-flex xs4 class="m-col-r pl-3">
+        <v-flex md4 xs12 class="m-col-r pl-3">
           <div class="top-info">
             <h4 class="headline font-weight-light">Shopping Cart</h4>
           </div>
