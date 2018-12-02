@@ -30,20 +30,10 @@
               class="elevation-1"
               hide-actions
             >
-              <template slot="items" slot-scope="props" v-if="props.item.title">
+              <template slot="items" slot-scope="props" v-if="props.item.click">
                 <td class="text-xs-left">{{ props.item.title }}</td>
                 <td class="text-xs-left">$ {{ props.item.price }}</td>
                 <td class="text-xs-center">
-                  <v-tooltip bottom>
-                    <v-icon
-                      slot="activator"
-                      class="mr-2"
-                      small
-                      @click="removeItem(props.index)">remove
-                    </v-icon>
-                    <span>Decrease</span>
-                  </v-tooltip>
-                  {{ props.item.click }}
                   <v-tooltip bottom>
                     <v-icon
                       slot="activator"
@@ -52,6 +42,18 @@
                       @click="addItem(props.index)">add
                     </v-icon>
                     <span>Increase</span>
+                  </v-tooltip>
+
+                  {{ props.item.click }}
+
+                  <v-tooltip bottom>
+                    <v-icon
+                      slot="activator"
+                      class="mr-2"
+                      small
+                      @click="removeItem(props.index)">remove
+                    </v-icon>
+                    <span>Decrease</span>
                   </v-tooltip>
                 </td>
                 <td class="text-xs-right">
@@ -75,6 +77,27 @@
               </template>
             </v-data-table>
           </v-flex>
+          <v-snackbar
+            v-model="closeSnack"
+            :timeout="0"
+            bottom
+          >
+            {{ text }}
+            <v-btn
+              color="pink"
+              flat
+              @click="applyDiscount"
+            >
+              Apply
+            </v-btn>
+            <v-btn
+              color="pink"
+              flat
+              @click="closeSnack = false"
+            >
+              Close
+            </v-btn>
+          </v-snackbar>
         </v-layout>
       </v-container>
     </div>
@@ -119,7 +142,10 @@
           {text: 'Total', value: 'total', align: 'right'},
           {text: '', value: 'remove', align: 'right', sortable: false,},
         ],
-        total: 0
+        total: 0,
+        text: 'You have a 20% discount. Use now ?',
+        discount: false,
+        closeSnack: false
       }
     },
     computed: {
@@ -128,6 +154,12 @@
         this.buyitems.forEach(i => {
           this.total += i.click * parseInt(i.price ? i.price : 0)
         });
+        if(this.discount) {
+          return this.total = parseInt(this.total * 0.8)
+        }
+        if(this.total >= 1000) {
+          this.closeSnack = true
+        }
         return this.total;
       }
     },
@@ -136,15 +168,22 @@
         this.buyitems[index].title = this.items[index].title;
         this.buyitems[index].price = this.items[index].price;
         this.buyitems[index].click += 1
+        this.buyitems[index].showItem = true
       },
       removeItem(index) {
         if (this.buyitems[index].click > 0) {
           this.buyitems[index].click -= 1
+        } else if(this.buyitems[index].click = 0) {
+          this.buyitems[index].showItem = false
         }
       },
       hideItem(index) {
         this.buyitems[index].click = 0;
-        this.buyitems[index].title = ''
+        this.buyitems[index].showItem = false;
+      },
+      applyDiscount() {
+        this.discount = true;
+        this.closeSnack = false;
       }
     },
     watch: {
