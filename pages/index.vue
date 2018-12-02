@@ -4,25 +4,15 @@
       <v-container grid-list-md text-xs-center>
         <v-layout justify-center row wrap>
           <v-flex xs4 v-for="(item, index) in items" :key="index">
-            <v-card>
+            <v-card class="item-card">
               <v-img
                 :src="item.img"
-                aspect-ratio="2.75"
-                height="450px"
               ></v-img>
-              <v-card-title>
-                <div>
-                  <h1>{{item.title}}</h1>
-                </div>
-              </v-card-title>
-              <v-spacer></v-spacer>
-              <div>
-                <h3 class="headline mb-0" style="text-align: right">
+              <h1 class="text-xs-left">{{item.title}}</h1>
+              <h3 class="text-xs-left">
                   $ {{item.price}}
-                </h3>
-              </div>
-              <v-spacer></v-spacer>
-              <v-btn fab dark color="indigo">
+              </h3>
+              <v-btn fab dark class="btn-add">
                 <v-icon dark @click="addItem(index)">add</v-icon>
               </v-btn>
             </v-card>
@@ -30,37 +20,61 @@
         </v-layout>
       </v-container>
     </div>
-
-    <v-layout justify-center row wrap>
-      <v-flex xs6>
-        <v-data-table
-          :headers="headers"
-          :items="buyitems"
-          class="elevation-1"
-          hide-actions
-        >
-          <template slot="items" slot-scope="props" v-if="props.item.title">
-            <td>{{ props.item.title }}</td>
-            <td>$ {{ props.item.price }}</td>
-            <td>
-              <v-btn color="primary" small @click="addItem(props.index)">
-                <v-icon>add</v-icon>
-              </v-btn>
-              {{ props.item.click }}
-              <v-btn color="error" small @click="removeItem(props.index)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </td>
-            <td>$ {{ props.item.click * props.item.price }}</td>
-          </template>
-          <template slot="footer">
-            <td :colspan="headers.length">
-              <strong>Total: $ {{syncTotal}}</strong>
-            </td>
-          </template>
-        </v-data-table>
-      </v-flex>
-    </v-layout>
+    <div class="table-price">
+     <v-container grid-list-md text-xs-center>
+       <v-layout justify-center row wrap>
+        <v-flex xs12>
+          <v-data-table
+            :headers="headers"
+            :items="buyitems"
+            class="elevation-1"
+            hide-actions
+          >
+            <template slot="items" slot-scope="props" v-if="props.item.title">
+              <td class="text-xs-left">{{ props.item.title }}</td>
+              <td class="text-xs-left">$ {{ props.item.price }}</td>
+              <td class="text-xs-center">
+                <v-tooltip bottom>
+                  <v-icon
+                    slot="activator"
+                    class="mr-2"
+                    small
+                    @click="removeItem(props.index)">remove</v-icon>
+                  <span>Decrease</span>
+                </v-tooltip>
+                {{ props.item.click }}
+                <v-tooltip bottom>
+                  <v-icon
+                    slot="activator"
+                    class="ml-2"
+                    small
+                    @click="addItem(props.index)">add</v-icon>
+                  <span>Increase</span>
+                </v-tooltip>
+              </td>
+              <td class="text-xs-right">
+               $ {{ props.item.click * props.item.price }}
+              </td>
+              <td class="text-xs-right del-box">
+               <v-tooltip bottom>
+                 <v-icon
+                   slot="activator"
+                   small
+                   @click="addItem(props.index)">delete</v-icon>
+                 <span>Remove</span>
+               </v-tooltip>
+              </td>
+            </template>
+            <template slot="footer">
+              <td class="text-xs-right total-txt" :colspan="headers.length">
+                <strong>Total: $ {{syncTotal}}</strong>
+              </td>
+            </template>
+          </v-data-table>
+        </v-flex>
+       </v-layout>
+     </v-container>
+    </div>
   </div>
 
 </template>
@@ -98,8 +112,9 @@
         headers: [
           {text: 'Shopping Cart', value: 'title'},
           {text: 'Price', value: 'price'},
-          {text: 'Quantity', value: 'quantity'},
-          {text: 'Total', value: 'total'},
+          {text: 'Quantity', value: 'quantity', align:'center'},
+          {text: 'Total', value: 'total', align:'right'},
+          {text: '', value: 'remove', align:'right', sortable: false,},
         ],
         total: 0
       }
@@ -143,7 +158,59 @@
     /*width: 760px;*/
     /*max-width: 1024px;*/
     /*margin: 20px auto;*/
+    .table-price{
+     max-width: 960px;
+     margin: 0 auto;
+     > .container{
+      padding-top: 12px;
+      .del-box{
+       // border-left: 1px solid rgba(0,0,0,0.12);
+       width: 50px;
+       position: relative;
+       &:before{
+        position: absolute;
+        content: '';
+        width: 1px;
+        height: 30px;
+        background-color: rgba(0, 0, 0, 0.12);
+        left: 0;
+        top: 10px;
+       }
+      }
+      .total-txt{
+       padding: 24px;
+       font-size: 18px;
+      }
+     }
+    }
     #product {
+      max-width: 960px;
+      margin: 0 auto;
+      > .container{
+       padding-bottom: 12px;
+      }
+      .item-card{
+       position: relative;
+       .btn-add{
+        position: absolute;
+        position: absolute;
+        top: 189px;
+        right: 9px;
+        background-color: #27ae60;
+       }
+       h1 {
+         margin-left: 20px;
+         padding-top: 30px;
+         font-size: 24px;
+       }
+       h3 {
+         margin-left: 20px;
+         padding-bottom: 20px;
+         padding-top: 15px;
+         font-size: 20px;
+         font-weight: 400;
+       }
+      }
       .box {
         width: 230px;
         background-color: #fff;
@@ -172,12 +239,6 @@
           &:hover {
             transform: scale(1.05);
           }
-        }
-        h2 {
-          margin-left: 20px;
-        }
-        p {
-          margin-left: 20px;
         }
       }
     }
